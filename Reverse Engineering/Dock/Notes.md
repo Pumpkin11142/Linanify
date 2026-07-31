@@ -10,7 +10,7 @@
 | 5 | Right In | Line In - R (+) |
 | 6 | Left In | Line In - L (+) |
 | 7 | ? | ??? Function unknown / varies by accessory ??? |
-| 8 | Video Out | Composite video output (only when the slideshow mode is active on iPod Photo) |
+| 8 | Video Out | Composite video output (only when slideshow mode is active on iPod Photo) |
 | 9 | S-Video Chroma | S-Video Chrominance output (iPod Color/Photo only) |
 | 10 | S-Video Luma | S-Video Luminance output (iPod Color/Photo only) |
 | 11 | GND | Serial GND |
@@ -20,10 +20,10 @@
 | 15 | GND | Ground (-), internally connected with pin 16 on iPod motherboard |
 | 16 | GND | USB GND (-), internally connected with pin 15 on iPod motherboard |
 | 17 | n/a | not used |
-| 18 | 3.3V | 3.3V Power (+) (logic power rail) |
+| 18 | 3.3V | 3.3V Power (+) (logic rail) |
 | 19 | +12V | FireWire Power 12VDC (+) |
 | 20 | +12V | FireWire Power 12VDC (+) |
-| 21 | Accessory Indicator / Serial enable | Different resistances to ground indicate accessory type / enable serial on older models |
+| 21 | Accessory Indicator / Serial enable | Different resistances to GND indicate accessory type; enables accessory-specific modes |
 | 22 | TPA (-) | FireWire TPA (-) |
 | 23 | 5 VDC (+) | USB Power 5 VDC (+) |
 | 24 | TPA (+) | FireWire TPA (+) |
@@ -37,21 +37,24 @@
 ---
 
 ## Notes & Electrical
-- Connector: Apple's 30-pin dock connector, used across many iPod/iPhone generations. Pin numbering is from left-to-right looking at the male plug (verify orientation when measuring).
+- Connector: Apple's 30-pin dock connector, used across many iPod/iPhone generations. Pin numbering is left-to-right when looking at the plug face — confirm orientation when probing.
 - Power rails:
-  - Pin 18: 3.3 V (logic) — used to power internal logic or to detect docking state in some accessories.
+  - Pin 18: 3.3 V logic rail — used for accessory detection or powering low-power accessories in some setups.
   - Pin 23: 5 V (USB VBUS) — USB power from host/dock.
-  - Pins 19 & 20: +12 V (FireWire charging on older docks) — not present/used on modern USB-only docks.
-- Accessory detection (Pin 21): Apple used resistor-based ID on this pin so that different dock/accessory types can be identified. Common reported resistor values include examples like 75 kΩ, 165 kΩ, 200 kΩ, etc. Exact mapping to accessory types varies by model and is ??? (verify exact values per model) ???.
-- Serial (UART) on pins 12 (Tx) and 13 (Rx): often 3.3V TTL levels, used by service/debug accessories and some accessories that use a serial protocol. Baud rate / framing is ??? (model-dependent) ???.
-- USB signals: Pins 25 (D-), 27 (D+) — standard USB differential pair. Use standard USB termination and pull-up/pull-down resistors when emulating a host/device.
-- FireWire signals: TPA/TPB pairs on 22/24/26/28 — legacy, primarily for older iPod generations; usually not needed for modern charging/hacking.
+  - Pins 19 & 20: +12 V (FireWire charging on older docks) — legacy; many modern hosts supply only 5V.
+- Accessory detection (Pin 21):
+  - Apple used a resistor-to-ground ID method to differentiate accessory types (charging dock, car kit, remote, etc.).
+  - Known resistor examples: values reported vary (e.g., 75 kΩ, 165 kΩ, 200 kΩ) — exact IDs are model-dependent. Marked as ??? where unclear.
+- Serial (UART) on pins 12 (Tx) and 13 (Rx): typically 3.3V TTL levels, used by service/debug accessories on some models. Baud/framing: ??? (model-dependent).
+- USB: Pins 25 (D-), 27 (D+) — standard USB differential pair. Follow USB specification for termination/pull resistors when emulating host or device.
+- FireWire: TPA/TPB pairs (22/24/26/28) are legacy for high-speed data and charging on older iPods.
+- Grounding: multiple ground pins (1,2,11,15,16,29,30) — verify continuity to mainboard ground before connecting.
 
 ## Common Tasks & Tips
-- When probing the connector, always power down the iPod and use a multimeter first to identify grounds and power rails before applying signals.
-- If reverse-engineering accessories, measure resistor value on Pin 21 to identify accessory ID behavior for your specific iPod model.
-- Beware of back-powering: connecting 5V to the dock while other power sources are present can damage the device unless power paths are understood.
+- When probing, power off device first. Use DMM to find ground and power pins, then probe with scope only after verifying safe voltages.
+- For accessory emulation, measure the actual resistance between Pin 21 and GND on a known-good accessory to reproduce detection.
+- Avoid backfeeding power rails which can damage battery charging circuits; understand device power path before powering from docks.
 
 ## References
 1. https://apple.fandom.com/wiki/30-pin_dock_connector#Pin_connectors  
-2. ??? Additional authoritative references (Apple service manuals, hobbyist pinout pages) ???
+2. ??? Apple Service Manual / Developer docs ???  
