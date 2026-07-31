@@ -1,6 +1,6 @@
 # Data, Info, etc Related to the iPod's Dock Connector
 ---
-Pin Connectors <sup>[1]</sup>
+## Pin Connectors <sup>[1]</sup>
 | Pin |	Signal | Description |
 |---|---|---|
 | 1 |	GND |Ground (-), internally connected with Pin 2 on iPod motherboard |
